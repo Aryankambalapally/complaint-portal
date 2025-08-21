@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { loginUser } from "@/actions/login";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export default function Page() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl") || "/";
@@ -49,7 +49,6 @@ export default function Page() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-
         <Input
           className="w-full mb-4"
           type="password"
@@ -59,18 +58,15 @@ export default function Page() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
         <Button className="w-full text-base" type="submit" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Login"}
         </Button>
-
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}
           <a href="/signup" className="underline underline-offset-4">
             Sign up
           </a>
         </div>
-
         <div className="text-center text-sm mt-4">
           <a href="forgot" className="underline underline-offset-4">
             Forgot Password?
@@ -78,5 +74,13 @@ export default function Page() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
